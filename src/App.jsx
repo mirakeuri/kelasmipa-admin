@@ -3,7 +3,7 @@ import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 import { FileBrowser, FileContextMenu, FileHelper, FileList, FileNavbar, FileToolbar, FullFileBrowser } from 'chonky'
-import {listAll, ref} from 'firebase/storage'
+import {getBlob, listAll, ref} from 'firebase/storage'
 import { storage } from './lib/firebase'
 import { useEffect } from 'react'
 import { ChonkyActions } from 'chonky'
@@ -60,6 +60,12 @@ function App() {
                 if (fileToOpen && FileHelper.isDirectory(fileToOpen)) {
                     setCurrentFolder(fileToOpen.id);
                     return;
+                }
+                if (fileToOpen && !FileHelper.isDirectory(fileToOpen)) {
+                  const fileRef = ref(storage,fileToOpen.id)
+                  getBlob(fileRef)
+                  .then((blob) => console.log(blob.toString())) 
+                  return
                 }
             }
 
